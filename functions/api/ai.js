@@ -2,7 +2,7 @@
 const json = (code, obj) => new Response(JSON.stringify(obj), { status: code, headers: { 'content-type': 'application/json' } });
 
 async function ask(model, key, parts, noThinking) {
-  const generationConfig = { responseMimeType: 'application/json', maxOutputTokens: 7000 };
+  const generationConfig = { responseMimeType: 'application/json', maxOutputTokens: 8192 };
   if (noThinking) generationConfig.thinkingConfig = { thinkingBudget: 0 };
   const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: 'POST',
@@ -14,7 +14,7 @@ async function ask(model, key, parts, noThinking) {
 
 export async function onRequest({ request, env }) {
   const key = env.GEMINI_API_KEY;
-  const MODELS = [env.GEMINI_MODEL, 'gemini-3.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.1-flash-lite'].filter(Boolean);
+  const MODELS = [env.GEMINI_MODEL, 'gemini-3.5-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite'].filter(Boolean);
 
   // Open /api/ai in a browser to run this check.
   if (request.method === 'GET') return json(200, { ok: true, keyIsSet: !!key, keyLength: key ? key.length : 0, models: MODELS });
