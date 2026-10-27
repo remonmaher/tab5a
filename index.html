@@ -76,6 +76,13 @@ details summary{cursor:pointer;font-weight:600;color:var(--green);margin-top:12p
 .back{border:0;background:none;color:var(--green);font:600 15px var(--sans);cursor:pointer;padding:0;margin-bottom:14px}
 .back::before{content:"←";margin-inline-end:6px}
 [dir=rtl] .back::before{content:"→"}
+.role{display:block;color:var(--mute);font-size:13px}
+.addrow{display:flex;gap:8px;max-width:420px}
+.addrow input{flex:1;min-width:0;font:16px var(--sans);padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+.addrow button{border:0;background:var(--ink);color:var(--bg);border-radius:999px;padding:0 18px;font:600 14px var(--sans);cursor:pointer}
+.roles{list-style:none;margin:0 0 4px;padding:0;font-size:14px}
+.roles li{padding:3px 0}
+.roles span{color:var(--mute)}
 .foot{font-size:13px;color:var(--mute);margin-top:40px}
 .foot a{color:var(--green)}
 @media(max-width:560px){ul.ing{columns:1}}
@@ -97,34 +104,52 @@ details summary{cursor:pointer;font-weight:600;color:var(--green);margin-top:12p
 </div>
 <div id="pop" hidden>
 <div class="opts"><button data-r="world" data-i18n="rW" aria-pressed="true"></button><button data-r="egypt" data-i18n="rE" aria-pressed="false"></button><button data-r="arab" data-i18n="rM" aria-pressed="false"></button><button data-r="italy" data-i18n="rI" aria-pressed="false"></button><button data-r="asia" data-i18n="rA" aria-pressed="false"></button><button data-r="americas" data-i18n="rU" aria-pressed="false"></button></div>
-<div class="opts"><button data-k="classic" data-i18n="kC" aria-pressed="true"></button><button data-k="trend" data-i18n="kT" aria-pressed="false"></button></div>
 <button class="go" id="showl" data-i18n="showL" style="margin-top:6px"></button>
 <p class="foot" style="margin-top:12px" data-i18n="popNote"></p>
 </div>
 <label class="drop" id="drop"><b id="dtitle"></b><span id="dsub"></span><input type="file" id="file" accept="image/*" multiple></label>
 <div class="thumbs" id="thumbs"></div>
+<div id="ings"><p class="sec" style="margin:22px 0 10px" data-i18n="pickIng"></p><div class="opts" id="ingchips"></div><div class="addrow"><input id="ingin" type="text" maxlength="40"><button id="ingadd" type="button" data-i18n="add"></button></div></div>
 <button class="go" id="go" disabled></button>
 <div class="status" id="status" hidden></div>
 <div id="out"></div>
-<p class="foot"><span data-i18n="trouble"></span> <a href="/api/ai" data-i18n="test"></a> · v7</p>
+<p class="foot"><span data-i18n="trouble"></span> <a href="/api/ai" data-i18n="test"></a> · v8</p>
 </div>
 <script>
 window.addEventListener('error',e=>{try{status('Page error: '+e.message,true)}catch(_){}});
 const $=s=>document.querySelector(s);
 const T={
-en:{title:'Tab5a: photo to recipe',brand:'Tab5a',tag:'photo to plate',h1a:'Show me the food.',h1b:'I’ll show you how.',lead:'Snap your fridge and get dinner ideas with steps. Or snap a dish you love and get the full recipe.',tabF:'Fridge → Meals',tabD:'Dish → Recipe',dtF:'Add photos of your fridge or pantry',dsF:'Tap to take a photo or choose up to 4 images',dtD:'Add a photo of a dish or dessert',dsD:'Tap to take a photo or choose an image',goF:'Cook something up',goD:'Get the recipe',look:'Looking closely…',see:'I can see',make:'You could make',ing:'Ingredients',method:'Method',tip:'Chef’s tip: ',need:'need:',steps:'Show step-by-step',serves:'Serves',trouble:'Trouble?',test:'Test the server',noread:'I couldn’t read that photo. Try another one.',slow:'That took too long. Try one smaller photo.',nofood:'I couldn’t find food in that photo. Try another.',problem:'Problem: ',tabP:'Popular',popNote:'AI picks from its general knowledge, not live rankings.',rW:'World',rE:'Egypt',rM:'Middle East',rI:'Italy',rA:'Asia',rU:'Americas',kC:'Classics',kT:'Trending',showL:'Show dishes',back:'Back',pick:'Picking dishes…',writing:'Writing the recipe…'},
-ar:{title:'طبخة | من الصورة للوصفة',brand:'طبخة',tag:'من الصورة للطبق',h1a:'وريني الأكل..',h1b:'وأنا أقولك تعمله إزاي.',lead:'صوّر التلاجة وهتلاقي أكلات تطبخها بخطوات سهلة. أو صوّر أكلة عجباك وخد وصفتها كاملة.',tabF:'من التلاجة لوجبة',tabD:'من الأكلة لوصفة',dtF:'ضيف صور للتلاجة أو المخزن',dsF:'دوس عشان تصوّر أو تختار لحد ٤ صور',dtD:'ضيف صورة أكلة أو حلو',dsD:'دوس عشان تصوّر أو تختار صورة',goF:'يلا نطبخ',goD:'هات الوصفة',look:'ثواني.. ببص على الصورة',see:'شايف عندك',make:'تقدر تعمل',ing:'المكوّنات',method:'الطريقة',tip:'نصيحة الشيف: ',need:'ناقصك:',steps:'شوف الخطوات',serves:'يكفي',trouble:'فيه مشكلة؟',test:'جرّب السيرفر',noread:'معرفتش أقرا الصورة دي. جرّب غيرها.',slow:'الموضوع اتأخر أوي. جرّب صورة أصغر.',nofood:'مش شايف أكل في الصورة دي. جرّب غيرها.',problem:'في مشكلة: ',tabP:'ترند الأكل',popNote:'اقتراحات من الذكاء الاصطناعي حسب معلوماته، مش ترتيب لحظي.',rW:'العالم',rE:'مصر',rM:'الشرق الأوسط',rI:'إيطاليا',rA:'آسيا',rU:'الأمريكتين',kC:'الكلاسيك',kT:'الترند',showL:'وريني الأكلات',back:'رجوع',pick:'بختار لك أكلات.. ثواني',writing:'بكتب الوصفة.. ثواني'}};
+en:{title:'Tab5a: photo to recipe',brand:'Tab5a',tag:'photo to plate',h1a:'Show me the food.',h1b:'I’ll show you how.',lead:'Snap your fridge and get dinner ideas with steps. Or snap a dish you love and get the full recipe.',tabF:'Fridge → Meals',tabD:'Dish → Recipe',dtF:'Add photos of your fridge or pantry',dsF:'Tap to take a photo or choose up to 4 images',dtD:'Add a photo of a dish or dessert',dsD:'Tap to take a photo or choose an image',goF:'Cook something up',goD:'Get the recipe',look:'Looking closely…',see:'I can see',make:'You could make',ing:'Ingredients',method:'Method',tip:'Chef’s tip: ',need:'need:',steps:'Show step-by-step',serves:'Serves',trouble:'Trouble?',test:'Test the server',noread:'I couldn’t read that photo. Try another one.',slow:'That took too long. Try one smaller photo.',nofood:'I couldn’t find food in that photo. Try another.',problem:'Problem: ',tabP:'Popular',popNote:'AI picks from its general knowledge.',rW:'World',rE:'Egypt',rM:'Middle East',rI:'Italy',rA:'Asia',rU:'Americas',pickIng:'Or pick what you have',typeIng:'Type an ingredient…',add:'Add',have:'You have',roles:'What each one does',showL:'Show dishes',back:'Back',pick:'Picking dishes…',writing:'Writing the recipe…'},
+ar:{title:'طبخة | من الصورة للوصفة',brand:'طبخة',tag:'من الصورة للطبق',h1a:'وريني الأكل..',h1b:'وأنا أقولك تعمله إزاي.',lead:'صوّر التلاجة وهتلاقي أكلات تطبخها بخطوات سهلة. أو صوّر أكلة عجباك وخد وصفتها كاملة.',tabF:'من التلاجة لوجبة',tabD:'من الأكلة لوصفة',dtF:'ضيف صور للتلاجة أو المخزن',dsF:'دوس عشان تصوّر أو تختار لحد ٤ صور',dtD:'ضيف صورة أكلة أو حلو',dsD:'دوس عشان تصوّر أو تختار صورة',goF:'يلا نطبخ',goD:'هات الوصفة',look:'ثواني.. ببص على الصورة',see:'شايف عندك',make:'تقدر تعمل',ing:'المكوّنات',method:'الطريقة',tip:'نصيحة الشيف: ',need:'ناقصك:',steps:'شوف الخطوات',serves:'يكفي',trouble:'فيه مشكلة؟',test:'جرّب السيرفر',noread:'معرفتش أقرا الصورة دي. جرّب غيرها.',slow:'الموضوع اتأخر أوي. جرّب صورة أصغر.',nofood:'مش شايف أكل في الصورة دي. جرّب غيرها.',problem:'في مشكلة: ',tabP:'الأكلات المشهورة',popNote:'اقتراحات من الذكاء الاصطناعي حسب معلوماته.',rW:'العالم',rE:'مصر',rM:'الشرق الأوسط',rI:'إيطاليا',rA:'آسيا',rU:'الأمريكتين',pickIng:'أو اختار اللي عندك',typeIng:'اكتب مكوّن…',add:'ضيف',have:'معاك',roles:'دور كل مكوّن في الأكلة',showL:'وريني الأكلات',back:'رجوع',pick:'بختار لك أكلات.. ثواني',writing:'بكتب الوصفة.. ثواني'}};
 let lang='en',mode='fridge',blobs=[];
 try{lang=localStorage.getItem('lang')||((navigator.language||'').slice(0,2)==='ar'?'ar':'en')}catch(_){}
 const t=k=>T[lang][k];
 function h(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
 
+const BASE=[['Chicken','فراخ'],['Meat','لحمة'],['Fish','سمك'],['Eggs','بيض'],['Milk','لبن'],['Cheese','جبنة'],['Butter','زبدة'],['Oil','زيت'],['Salt','ملح'],['Pepper','فلفل'],['Rice','رز'],['Pasta','مكرونة'],['Potatoes','بطاطس'],['Tomatoes','طماطم'],['Onion','بصل'],['Garlic','توم'],['Flour','دقيق'],['Sugar','سكر'],['Bread','عيش'],['Lentils','عدس']];
+const sel=new Set(),custom=[];
+function refreshGo(){$('#go').disabled=mode==='fridge'?!(blobs.length||sel.size):!blobs.length}
+function renderIng(){
+  const box=$('#ingchips');box.replaceChildren();
+  BASE.map(([e,a])=>({v:e,l:lang==='ar'?a:e})).concat(custom.map(c=>({v:c,l:c}))).forEach(x=>{
+    const b=h('button',null,x.l);b.type='button';b.setAttribute('aria-pressed',sel.has(x.v));
+    b.onclick=()=>{sel.has(x.v)?sel.delete(x.v):sel.add(x.v);b.setAttribute('aria-pressed',sel.has(x.v));refreshGo()};box.append(b);
+  });
+}
+function addIng(){
+  const v=$('#ingin').value.trim().slice(0,40);if(!v)return;
+  const base=BASE.find(b=>b[0].toLowerCase()===v.toLowerCase()||b[1]===v);
+  if(base)sel.add(base[0]);else{if(!custom.includes(v))custom.push(v);sel.add(v)}
+  $('#ingin').value='';renderIng();refreshGo();
+}
+$('#ingadd').onclick=addIng;
+$('#ingin').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addIng()}};
 function apply(){
   document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.title=t('title');
   document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang));
   const f=mode==='fridge';
-  $('#dtitle').textContent=t(f?'dtF':'dtD');$('#dsub').textContent=t(f?'dsF':'dsD');$('#go').textContent=t(f?'goF':'goD');
+  $('#dtitle').textContent=t(f?'dtF':'dtD');$('#dsub').textContent=t(f?'dsF':'dsD');$('#go').textContent=t(f?'goF':'goD');$('#ingin').placeholder=t('typeIng');renderIng();
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{
   lang=b.dataset.l;try{localStorage.setItem('lang',lang)}catch(_){}
@@ -133,7 +158,7 @@ document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>{
 function setMode(m){
   mode=m;blobs=[];$('#thumbs').replaceChildren();$('#out').replaceChildren();$('#go').disabled=true;status('');
   $('#t-fridge').setAttribute('aria-selected',m==='fridge');$('#t-dish').setAttribute('aria-selected',m==='dish');$('#t-pop').setAttribute('aria-selected',m==='pop');
-  const pop=m==='pop';$('#drop').hidden=pop;$('#thumbs').hidden=pop;$('#go').hidden=pop;$('#pop').hidden=!pop;
+  const pop=m==='pop';$('#drop').hidden=pop;$('#thumbs').hidden=pop;$('#go').hidden=pop;$('#pop').hidden=!pop;$('#ings').hidden=m!=='fridge';sel.clear();custom.length=0;
   $('#file').multiple=m==='fridge';$('#file').value='';apply();
 }
 $('#t-fridge').onclick=()=>setMode('fridge');
@@ -154,7 +179,7 @@ $('#file').onchange=async e=>{
   for(const f of list){
     try{const b=await shrink(f);blobs.push(b);const i=new Image();i.src=URL.createObjectURL(b);i.alt='';$('#thumbs').append(i)}catch(_){status(t('noread'),true)}
   }
-  $('#go').disabled=!blobs.length;
+  refreshGo();
 };
 function status(msg,isErr){const s=$('#status');s.hidden=!msg;s.textContent=msg||'';s.className='status'+(isErr?' err':'')}
 function stepsList(steps){const o=h('ol');steps.forEach(x=>o.append(h('li',null,x)));return o}
@@ -169,19 +194,25 @@ async function loadPic(box,q){
 }
 function renderFridge(d){
   const out=$('#out');out.replaceChildren();
-  out.append(h('p','sec',t('see')));
-  const c=h('div','chips');(d.ingredients||[]).forEach(x=>c.append(h('span','chip',x)));out.append(c);
+  if((d.ingredients||[]).length){
+    out.append(h('p','sec',t(blobs.length?'see':'have')));
+    const c=h('div','chips');d.ingredients.forEach(x=>c.append(h('span','chip',x)));out.append(c);
+  }
   out.append(h('p','sec',t('make')));
   (d.recipes||[]).forEach((r,i)=>{
     const card=h('div','card');card.style.animationDelay=i*90+'ms';
     const pic=picBox();card.append(pic);loadPic(pic,r.photo||r.name);
     card.append(h('h2',null,r.name));
     const m=h('div','meta');[r.time,r.difficulty].filter(Boolean).forEach(x=>m.append(h('span',null,x)));card.append(m);
+    const uses=(r.uses||[]).map(x=>typeof x==='string'?{item:x}:x);
     const ch=h('div','chips');ch.style.marginBottom='8px';
-    (r.uses||[]).forEach(x=>ch.append(h('span','chip',x)));
+    uses.forEach(x=>ch.append(h('span','chip',x.item)));
     (r.missing||[]).forEach(x=>ch.append(h('span','chip miss',t('need')+' '+x)));
     card.append(ch);
-    const det=h('details');det.append(h('summary',null,t('steps')));det.append(stepsList(r.steps||[]));
+    const det=h('details');det.append(h('summary',null,t('steps')));
+    const rl=uses.filter(x=>x.role);
+    if(rl.length){det.append(h('p','sec',t('roles')));const u=h('ul','roles');rl.forEach(x=>{const l=h('li');l.append(h('b',null,x.item),h('span',null,' — '+x.role));u.append(l)});det.append(u)}
+    det.append(stepsList(r.steps||[]));
     if(i===0)det.open=true;
     card.append(det);out.append(card);
   });
@@ -195,22 +226,25 @@ function renderDish(d,q,back){
   card.append(h('h2',null,d.name));
   const m=h('div','meta');[d.cuisine,d.time,d.servings&&(t('serves')+' '+d.servings)].filter(Boolean).forEach(x=>m.append(h('span',null,x)));card.append(m);
   card.append(h('p','sec',t('ing')));
-  const u=h('ul','ing');(d.ingredients||[]).forEach(x=>{const l=h('li');l.append(h('b',null,x.amount?x.amount+' ':''),document.createTextNode(x.item));u.append(l)});
+  const u=h('ul','ing');(d.ingredients||[]).forEach(x=>{const l=h('li');l.append(h('b',null,x.amount?x.amount+' ':''),document.createTextNode(x.item));if(x.role)l.append(h('span','role',x.role));u.append(l)});
   card.append(u);
   card.append(h('p','sec',t('method')));card.append(stepsList(d.steps||[]));
   if(d.tip)card.append(h('div','tip',t('tip')+d.tip));
   out.append(card);
 }
+const ROLE_RULE=' Every ingredient listed must be used by name in at least one step, and each ingredient has a short "role" saying why it is in the dish (for example main protein, adds creaminess, for frying). Never list an ingredient that no step uses.';
+const DISH_RULES=' Steps must be clear and specific, with temperatures and times.'+ROLE_RULE+' ';
 function langRule(){return lang==='ar'
-  ?'Write every text value (names, ingredients, amounts, times, difficulty, steps, tips) in friendly Egyptian Arabic slang (عامية مصرية) as an Egyptian home cook would speak, using words like دلوقتي وعشان وكده وشوية ولحد ما. Keep JSON keys in English, and keep the "photo" field in English.'
+  ?'Write every text value (names, ingredients, amounts, roles, times, difficulty, steps, tips) in natural Egyptian Arabic (عامية مصرية), exactly as an Egyptian home cook would say it aloud. Use Arabic script only, with no English words or Latin letters (dish and ingredient names in Arabic too), and digits 0-9 for numbers. Use correct, common Egyptian kitchen words such as: فراخ، لحمة، سمك، بيض، لبن، جبنة، زبدة، زيت، ملح، فلفل، رز، مكرونة، بطاطس، طماطم، بصل، توم، عيش، حلة، طاسة، فرن، معلقة، كوباية، سخّن، قلّب، سيبه، لحد ما يستوي، دلوقتي، شوية، كمان، عشان، كده، بعدين. Give instructions in the imperative (اغسل، قطّع، حُط، ضيف، قلّب). Before answering, re-read every sentence and fix any wrong, unnatural, stiff Modern Standard Arabic, or missing words. Keep JSON keys and the "photo" field in English.'
   :'Write all text values in clear, friendly English. Keep JSON keys in English.'}
 
 $('#go').onclick=async()=>{
   $('#go').disabled=true;$('#out').replaceChildren();status(t('look'));
   try{
-    const prompt=mode==='fridge'
-      ?'You are a friendly home chef. Look at the attached fridge/pantry photos. Identify the food items you can actually see. Then suggest 4 realistic recipes using mostly those items (assume salt, pepper, oil and water). Return ONLY JSON: {"ingredients":[string],"recipes":[{"name":string,"photo":string,"time":string,"difficulty":string,"uses":[string],"missing":[string],"steps":[string]}]}. "photo" is 2 to 4 English words naming the finished dish for a photo search. Steps must be clear and specific, 5 to 8 per recipe. If there is no food, return {"error":"short explanation"}. '+langRule()
-      :'You are a professional chef. Identify the dish or dessert in the attached photo and write a complete home recipe. Return ONLY JSON: {"name":string,"photo":string,"cuisine":string,"time":string,"servings":number,"ingredients":[{"amount":string,"item":string}],"steps":[string],"tip":string}. Steps must be clear and specific, with temperatures and times. If the photo shows no food, return {"error":"short explanation"}. '+langRule();
+    const told=[...sel];
+    const fridgeP='You are a friendly home chef. '+(blobs.length?'Look at the attached fridge/pantry photos and identify the food items you can actually see. ':'')+(told.length?'The user also says they have: '+told.join(', ')+'. ':'')+'Suggest 4 realistic recipes (assume salt, pepper, oil and water are available). '+(told.length?(told.length<=4?'Every recipe must use ALL of the ingredients the user listed. ':'Each recipe should use as many of the listed ingredients as makes sense, and every listed ingredient must appear in at least one recipe. '):'')+'Return ONLY JSON {"ingredients":[string],"recipes":[{"name":string,"photo":string,"time":string,"difficulty":string,"uses":[{"item":string,"role":string}],"missing":[string],"steps":[string]}]}. "ingredients" lists everything available (seen or told). "photo" is the common English name of the finished dish, 2 to 4 words. Give 5 to 8 clear, specific steps per recipe.'+ROLE_RULE+' If there is no food and no ingredients, return {"error":"short explanation"}. '+langRule();
+    const dishP='You are a professional chef. Identify the dish or dessert in the attached photo and write a complete home recipe. Return ONLY JSON {"name":string,"photo":string,"cuisine":string,"time":string,"servings":number,"ingredients":[{"amount":string,"item":string,"role":string}],"steps":[string],"tip":string}. "photo" is the common English name of the dish.'+DISH_RULES+'If the photo shows no food, return {"error":"short explanation"}. '+langRule();
+    const prompt=mode==='fridge'?fridgeP:dishP;
     const images=await Promise.all(blobs.map(b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(',')[1]);f.readAsDataURL(b)})));
     const ac=new AbortController();const to=setTimeout(()=>ac.abort(),55000);
     const res=await fetch('/api/ai',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt,images}),signal:ac.signal});clearTimeout(to);
@@ -220,14 +254,13 @@ $('#go').onclick=async()=>{
     status('');mode==='fridge'?renderFridge(d):renderDish(d);
   }catch(e){
     console.error(e);status(e&&e.name==='AbortError'?t('slow'):t('problem')+((e&&e.message)||''),true);
-  }finally{$('#go').disabled=!blobs.length}
+  }finally{refreshGo()}
 };
 
-let popR='world',popK='classic',lastList=null;
+let popR='world',lastList=null;
 const RN={world:'around the world',egypt:'Egypt',arab:'the Middle East and Arab world',italy:'Italy',asia:'Asia',americas:'the Americas'};
-function sync(){document.querySelectorAll('[data-r]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.r===popR));document.querySelectorAll('[data-k]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===popK))}
+function sync(){document.querySelectorAll('[data-r]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.r===popR))}
 document.querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{popR=b.dataset.r;sync()});
-document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{popK=b.dataset.k;sync()});
 async function callAI(prompt,images){
   const ac=new AbortController();const to=setTimeout(()=>ac.abort(),55000);
   const res=await fetch('/api/ai',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({prompt,images:images||[]}),signal:ac.signal});clearTimeout(to);
@@ -247,15 +280,14 @@ function renderList(d){
 async function showList(){
   status(t('pick'));$('#out').replaceChildren();$('#showl').disabled=true;
   try{
-    const kind=popK==='classic'?'the most beloved, popular classic dishes that people actually cook and eat':'dishes that have been trending recently in restaurants, social media and home cooking';
-    const d=await callAI('List 10 of '+kind+', from '+RN[popR]+'. Use your general knowledge (this is not live data). Return ONLY JSON {"dishes":[{"name":string,"photo":string,"blurb":string}]}. "photo" is the exact, common English name of the dish. "blurb" is one short sentence. '+langRule());
+    const d=await callAI('List the 10 most popular, beloved dishes that people actually cook and eat in '+RN[popR]+'. Use your general knowledge. Return ONLY JSON {"dishes":[{"name":string,"photo":string,"blurb":string}]}. "photo" is the exact, common English name of the dish. "blurb" is one short sentence. '+langRule());
     status('');lastList=d;renderList(d);
   }catch(e){fail(e)}finally{$('#showl').disabled=false}
 }
 async function openDish(x){
   status(t('writing'));$('#out').replaceChildren();
   try{
-    const d=await callAI('Write a complete home recipe for the dish "'+(x.photo||x.name)+'" (shown to the user as "'+x.name+'"). Return ONLY JSON {"name":string,"cuisine":string,"time":string,"servings":number,"ingredients":[{"amount":string,"item":string}],"steps":[string],"tip":string}. Steps must be clear and specific, with temperatures and times. '+langRule());
+    const d=await callAI('Write a complete home recipe for the dish "'+(x.photo||x.name)+'" (shown to the user as "'+x.name+'"). Return ONLY JSON {"name":string,"cuisine":string,"time":string,"servings":number,"ingredients":[{"amount":string,"item":string,"role":string}],"steps":[string],"tip":string}. Steps must be clear and specific, with temperatures and times. '+ROLE_RULE+' '+langRule());
     status('');renderDish(d,x.photo||x.name,true);scrollTo(0,0);
   }catch(e){fail(e);if(lastList)renderList(lastList)}
 }
